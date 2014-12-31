@@ -1,0 +1,7 @@
+<config>
+
+  <paper_size width="21.0" height="29.7" />
+
+  <calibration_files camera="calibrationCamera.yml" />
+ 
+</config>

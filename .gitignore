@@ -1,0 +1,5 @@
+#Compiled object files
+arOgreTest
+dependencias
+obj/*.o
+
