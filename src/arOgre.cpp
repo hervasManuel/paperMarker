@@ -9,7 +9,7 @@ arOgre::arOgre(){
   //path = "calib.yml";  
   //cameraParameters.readFromXMLFile(path);
   //scale = 0.00675f;
-  scale = 0.01f;
+  scale = 1.8f;
 
   //- Read configuration file ----
   //Log::info("Reading configuration file... ");
@@ -58,15 +58,15 @@ void arOgre::start(){
   OgreFramework::getSingletonPtr()->_camera->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
   OgreFramework::getSingletonPtr()->_camera->setNearClipDistance(0.01f);
   OgreFramework::getSingletonPtr()->_camera->setFarClipDistance(10.0f);
-  
+  //cout << "Image size: " << camera.getUndistortedIntrinsics().getImageSize() << endl;
   float pMatrix[16];
-  camera.OgreGetProjectionMatrix(camera.getUndistortedIntrinsics().getImageSize(),camera.getUndistortedIntrinsics().getImageSize() , pMatrix, 0.05f, 1000.0f, true); //1000.0f
+  camera.OgreGetProjectionMatrix(camera.getUndistortedIntrinsics().getImageSize(),camera.getUndistortedIntrinsics().getImageSize() , pMatrix, 0.05f, 1000.0f, false); //1000.0f
    
   Ogre::Matrix4 PM(pMatrix[0], pMatrix[1], pMatrix[2] , pMatrix[3],
 		   pMatrix[4], pMatrix[5], pMatrix[6] , pMatrix[7],
 		   pMatrix[8], pMatrix[9], pMatrix[10], pMatrix[11],
 		   pMatrix[12], pMatrix[13], pMatrix[14], pMatrix[15]);
-  
+  //cout << PM << endl;
   OgreFramework::getSingletonPtr()->_camera->setCustomProjectionMatrix(true, PM);
   OgreFramework::getSingletonPtr()->_camera->setCustomViewMatrix(true, Ogre::Matrix4::IDENTITY);
   
@@ -80,12 +80,12 @@ void arOgre::start(){
     ogreNode[i]->setVisible(false);
     
     // Init animation
-    ogreEntity[i]->getSkeleton()->setBlendMode(Ogre::ANIMBLEND_CUMULATIVE);
-    baseAnim[i] = ogreEntity[i]->getAnimationState("RunBase");
+    ///ogreEntity[i]->getSkeleton()->setBlendMode(Ogre::ANIMBLEND_CUMULATIVE);
+    //baseAnim[i] = ogreEntity[i]->getAnimationState("RunBase");
     //topAnim[i] = ogreEntity[i]->getAnimationState("Dance");
-    baseAnim[i]->setLoop(true);
+    ///baseAnim[i]->setLoop(true);
     //topAnim[i]->setLoop(true);
-    baseAnim[i]->setEnabled(true);
+    ///baseAnim[i]->setEnabled(true);
     //topAnim[i]->setEnabled(true);
   }   
     OgreFramework::getSingletonPtr()->_log->logMessage("Initialition Ogre Scene   ..... OK");
@@ -111,7 +111,7 @@ void arOgre::createBackground(int cols, int rows){
   Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().
     create("Background", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
   material->getTechnique(0)->getPass(0)->createTextureUnitState();
-  // material->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+  //material->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
   material->getTechnique(0)->getPass(0)->setDepthCheckEnabled(false);
   material->getTechnique(0)->getPass(0)->setDepthWriteEnabled(false);
   material->getTechnique(0)->getPass(0)->setLightingEnabled(false);
@@ -155,7 +155,7 @@ void arOgre::runLoop(){
       OgreFramework::getSingletonPtr()->_mouse->capture();
       
       _videoManager->UpdateFrame();
-      DrawCurrentFrame(_videoManager->getCurrentFrameMat());
+      //DrawCurrentFrame(_videoManager->getCurrentFrameMat());
       
       cv::Mat currentFrame = *_videoManager->getCurrentFrameMat();
       //cv::Mat test;
@@ -163,25 +163,29 @@ void arOgre::runLoop(){
       cv::Size paperSize = ConfigManager::getPaperSize();      
       //aDetector.detect(TheInputImage,detectMarkers,cameraParameters,markerSize,true);
       
-      PaperDetector::getInstance().detect(currentFrame, paperList, camera, paperSize, true);
+      PaperDetector::getInstance().detect(currentFrame, paperList, camera, paperSize, false);
 
-      //for(size_t i=0; i<paperList.size(); i++){ 
-      //  DrawCV::draw3DAxis(test, paperList[i], camera);
-      //  DrawCV::draw3DPaper(test, paperList[i], camera);
-      // }
+      for(size_t i=0; i<paperList.size(); i++){ 
+        DrawCV::draw3DAxis(currentFrame, paperList[i], camera);
+        //DrawCV::draw3DPaper(currentFrame, paperList[i], camera);
+       }
       //imshow("Test",test);
       //waitKey(1);
+      
+      DrawCurrentFrame(&currentFrame);
       
       for(unsigned int i=0; i<MAX_OBJECTS; i++) {
         if(i<paperList.size()) { 
           ogreNode[i]->setVisible(true);
           float position[3], orientation[4];
           paperList[i].OgreGetPoseParameters(position, orientation);
+          //cout << "Orientation " << orientation[0] << orientation[1] << orientation[2] << orientation[3] << endl;
+          //cout << "Position " << position[0] << position[1] << position[2] << endl;
           ogreNode[i]->setPosition(position[0], position[1], position[2]);
           ogreNode[i]->setOrientation(orientation[0], orientation[1], orientation[2], orientation[3]);	    
           
           // Update animation and correct position
-          baseAnim[i]->addTime(0.08);
+          //baseAnim[i]->addTime(0.08);
           //topAnim[i]->addTime(0.08);
           
           Ogre::Real offset = ogreEntity[i]->getBoundingBox().getHalfSize().y;

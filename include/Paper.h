@@ -119,6 +119,9 @@ using namespace cv;
     void calculateScreenExtrinsics(cv::Size paperSizeMeters, CameraModel& camera, bool setYPerperdicular) throw(cv::Exception);
     //void calculateProjectorExtrinsics(cv::Size paperSizeMeters, CameraProjectorSystem& cameraProjector, bool setYPerperdicular) throw(cv::Exception);
     void rotateXAxis(Mat &rotation);
+    void rotateYAxis(Mat &rotation);
+    void rotateYAxis2(Mat &rotation);
+    void rotateZAxis(Mat &rotation);
     //void calculateExtrinsics(cv::Size paperSizeMeters, cv::Mat camMatrix, cv::Mat distCoeff, bool setYPerperdicular) throw(cv::Exception);
     /**
      */

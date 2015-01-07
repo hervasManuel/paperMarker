@@ -108,11 +108,11 @@ void PaperDetector::detect(const cv::Mat& currentFrame,vector<Paper>& detectedPa
   //cv::waitKey(1);
   
    
-  //if (PaperCandidates.size() == 0) {
+  if (PaperCandidates.size() == 0) {
   //Log::info("HoughSpace");
   //Hough Line Transform method
-  //  houghLineTransform(houghImage, PaperCandidates);
-  //}
+    houghLineTransform(houghImage, PaperCandidates);
+  }
   
   // Sort the points in anti-clockwise order
   valarray<bool> swapped(false, PaperCandidates.size());  //used later
