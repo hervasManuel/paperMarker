@@ -172,7 +172,7 @@ void arOgre::runLoop(){
       //imshow("Test",test);
       //waitKey(1);
       
-      DrawCurrentFrame(&currentFrame);
+      DrawCurrentFrame(currentFrame);
       
       for(unsigned int i=0; i<MAX_OBJECTS; i++) {
         if(i<paperList.size()) { 
