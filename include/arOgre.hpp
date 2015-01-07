@@ -37,7 +37,7 @@ public:
 private:
   void createBackground(int cols, int rows);
   void runLoop();
-  void DrawCurrentFrame(cv::Mat *frameMat);
+  void DrawCurrentFrame(cv::Mat &frameMat);
   
   Ogre::Entity* ogreEntity[MAX_OBJECTS];
   Ogre::SceneNode* ogreNode[MAX_OBJECTS];

@@ -157,7 +157,7 @@ void arOgre::runLoop(){
       _videoManager->UpdateFrame();
       //DrawCurrentFrame(_videoManager->getCurrentFrameMat());
       
-      cv::Mat currentFrame = *_videoManager->getCurrentFrameMat();
+      cv::Mat currentFrame = _videoManager->getCurrentFrameMat();
       //cv::Mat test;
       //currentFrame.copyTo(test);
       cv::Size paperSize = ConfigManager::getPaperSize();      
@@ -219,8 +219,8 @@ bool arOgre::keyReleased(const OIS::KeyEvent &keyEventRef){
   return true;
 }
 
-void arOgre::DrawCurrentFrame(cv::Mat *frameMat){
-  if(frameMat->rows==0) return;
+void arOgre::DrawCurrentFrame(cv::Mat &frameMat){
+  if(frameMat.rows==0) return;
   
   Ogre::TexturePtr tex = Ogre::TextureManager::getSingleton().
     getByName("BackgroundTex",
@@ -232,12 +232,12 @@ void arOgre::DrawCurrentFrame(cv::Mat *frameMat){
   const Ogre::PixelBox& pixelBox = pBuffer->getCurrentLock();
   Ogre::uint8* pDest = static_cast<Ogre::uint8*>(pixelBox.data);
   
-  for(int j=0;j<frameMat->rows;j++){
-    for(int i=0;i<frameMat->cols;i++) {
+  for(int j=0;j<frameMat.rows;j++){
+    for(int i=0;i<frameMat.cols;i++) {
       int idx = ((j) * pixelBox.rowPitch + i )*4;
-      pDest[idx] = frameMat->data[(j*frameMat->cols+i)*3];
-      pDest[idx+1] = frameMat->data[(j*frameMat->cols+i)*3+1];
-      pDest[idx+2] = frameMat->data[(j*frameMat->cols+i)*3+2];
+      pDest[idx] = frameMat.data[(j*frameMat.cols+i)*3];
+      pDest[idx+1] = frameMat.data[(j*frameMat.cols+i)*3+1];
+      pDest[idx+2] = frameMat.data[(j*frameMat.cols+i)*3+2];
       pDest[idx+3] = 255;
     }
   }
