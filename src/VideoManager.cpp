@@ -1,28 +1,33 @@
 #include "VideoManager.hpp"
+//#include <opencv2/highgui/highgui.hpp>
+//#include "opencv2/videoio.hpp"
 
+//using namespace cv;
 VideoManager::VideoManager(int device, int w, int h){
-  _capture = cvCreateCameraCapture(device);
-  cvSetCaptureProperty(_capture, CV_CAP_PROP_FRAME_WIDTH, w);
-  cvSetCaptureProperty(_capture, CV_CAP_PROP_FRAME_HEIGHT, h); 
-  _frameIpl = NULL; 
-  _frameMat = NULL;
+  _capture.set(CV_CAP_PROP_FRAME_WIDTH, w);
+  _capture.set(CV_CAP_PROP_FRAME_HEIGHT, h);
+  //_capture.set(3, w);
+  //_capture.set(4, h); 
+  _capture.open(device);
+
+  if(!_capture.isOpened()) {
+    cout << "Failed opening the camera." << endl;
+  }
 }
 
 VideoManager::~VideoManager(){
-  cvReleaseCapture(&_capture); 
-  delete _frameIpl; 
-  delete _frameMat;
 }
+
 // ================================================================
-// UpdateFrame: Actualiza los punteros de frame Ipl y frame Mat
+// UpdateFrame: Actualiza las imagenes de frameMat
 void VideoManager::UpdateFrame(){
-  _frameIpl = cvQueryFrame(_capture);
-  _frameMat = new cv::Mat(_frameIpl);
+  _capture.grab();
+  _capture.retrieve(_frameMat);
 }
 
 // = IplImage* getCurrentFrameIpl =================================
-IplImage* VideoManager::getCurrentFrameIpl(){ return _frameIpl; }
+//IplImage* VideoManager::getCurrentFrameIpl(){ return _frameIpl; }
 
 // = IplImage* getCurrentFrameMat =================================
-cv::Mat* VideoManager::getCurrentFrameMat(){ return _frameMat; }
+cv::Mat& VideoManager::getCurrentFrameMat(){ return _frameMat; }
 
