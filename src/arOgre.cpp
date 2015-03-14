@@ -80,13 +80,13 @@ void arOgre::start(){
     ogreNode[i]->setVisible(false);
     
     // Init animation
-    ///ogreEntity[i]->getSkeleton()->setBlendMode(Ogre::ANIMBLEND_CUMULATIVE);
+    ogreEntity[i]->getSkeleton()->setBlendMode(Ogre::ANIMBLEND_CUMULATIVE);
     //baseAnim[i] = ogreEntity[i]->getAnimationState("RunBase");
-    //topAnim[i] = ogreEntity[i]->getAnimationState("Dance");
+    topAnim[i] = ogreEntity[i]->getAnimationState("Dance");
     ///baseAnim[i]->setLoop(true);
-    //topAnim[i]->setLoop(true);
+    topAnim[i]->setLoop(true);
     ///baseAnim[i]->setEnabled(true);
-    //topAnim[i]->setEnabled(true);
+    topAnim[i]->setEnabled(true);
   }   
     OgreFramework::getSingletonPtr()->_log->logMessage("Initialition Ogre Scene   ..... OK");
   runLoop();
@@ -186,7 +186,7 @@ void arOgre::runLoop(){
           
           // Update animation and correct position
           //baseAnim[i]->addTime(0.08);
-          //topAnim[i]->addTime(0.08);
+          topAnim[i]->addTime(0.05);
           
           Ogre::Real offset = ogreEntity[i]->getBoundingBox().getHalfSize().y;
           ogreNode[i]->translate(0,+offset*scale,0,Ogre::Node::TS_LOCAL);	 
